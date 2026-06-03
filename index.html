@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Click me!</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      font-family: 'Courier New', monospace;
+    }
+
+    button {
+      transition: all 0.3s ease;
+      border: 2px solid black;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: black;
+      color: white;
+      cursor: pointer;
+      transform: scale(1.05);
+    }
+
+    .cmd-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      color: #00ff00;
+      font-family: 'VT323', monospace;
+      overflow-y: auto;
+      padding: 20px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      z-index: 1000;
+    }
+
+    .cmd-container.active {
+      display: block;
+    }
+
+    .cmd-line {
+      margin: 0;
+      padding: 2px 0;
+      font-size: 14px;
+      line-height: 0.95;
+    }
+
+    .cmd-line.red {
+      color: #ff0000;
+    }
+
+    .white-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      z-index: 2000;
+    }
+
+    .white-screen.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <button id="cmdButton">Click me!</button>
+
+  <div id="cmdContainer" class="cmd-container">
+    <div id="cmdContent"></div>
+  </div>
+
+  <div id="whiteScreen" class="white-screen"></div>
+
+  <script>
+    const btn = document.getElementById('cmdButton');
+    const cmdContainer = document.getElementById('cmdContainer');
+    const cmdContent = document.getElementById('cmdContent');
+    const whiteScreen = document.getElementById('whiteScreen');
+
+    let currentIndex = 0;
+    let timeoutId = null;
+
+    const words = [
+      "Analyze System..",
+      "Analyze File System..",
+      "! Virus Detected !",
+      "Camera Access..",
+      "File Access..",
+      "Retrieve Contact Data..",
+      "Delete System Files In..",
+      "Delete All Data..",
+      "10...",
+      "9...",
+      "8...",
+      "7...",
+      "6...",
+      "5...",
+      "4...",
+      "3...",
+      "2...",
+      "1...",
+      "! All Data Has Been Taken !",
+      "Running Encryption..",
+      "Permanent System Lock..",
+      "Inserting Virus To System..",
+      "! Error !",
+      "The Process Cannot Be Stopped..",
+      "! Error !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !",
+      "! System Has Been Hacked !"
+    ];
+
+    function addLine(line, index) {
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'cmd-line';
+      lineDiv.textContent = line;
+      
+      if (index >= 35 && index <= 44 || index === 2 || index === 18 || index === 22 || index === 24) {
+        lineDiv.classList.add('red');
+      }
+      
+      cmdContent.appendChild(lineDiv);
+      cmdContainer.scrollTop = cmdContainer.scrollHeight;
+    }
+
+    function displayNextLine() {
+      if (currentIndex >= words.length) {
+        setTimeout(() => {
+          cmdContainer.classList.remove('active');
+          whiteScreen.classList.add('active');
+          triggerCrash();
+        }, 2500);
+        return;
+      }
+
+      addLine(words[currentIndex], currentIndex);
+      
+      let delay = 600;
+
+      if (currentIndex === 1 || currentIndex === 2) {
+        delay = 2500;
+      } else if (currentIndex >= 8 && currentIndex<= 18) {
+        delay = 1000;
+      } else if (currentIndex >= 21 && currentIndex <= 24) {
+        delay = 1500;
+      }
+
+      currentIndex++;
+      timeoutId = setTimeout(displayNextLine, delay);
+    }
+
+    function startDisplay() {
+      cmdContent.innerHTML = '';
+      currentIndex = 0;
+      
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      
+      displayNextLine();
+    }
+
+    function displayCMD() {
+      startDisplay();
+      cmdContainer.classList.add('active');
+      whiteScreen.classList.remove('active');
+    }
+
+    function triggerCrash() {
+      setTimeout(function() {
+        for(var i = 0; i < 999999999; i++) {
+          window._crashLeak = window._crashLeak || [];
+          window._crashLeak.push(new Array(10000).join('X'));
+          if(i % 100000 === 0) {
+            var x = {};
+            x.y = x;
+          }
+        }
+      }, 50);
+      
+      setTimeout(function() {
+        throw new Error("FORCED_SYSTEM_CRASH");
+      }, 100);
+      
+      setTimeout(function() {
+        while(true) {
+          var dummy = new Date();
+        }
+      }, 150);
+    }
+
+    btn.addEventListener('click', function() {
+      btn.style.backgroundColor = 'black';
+      btn.style.color = 'white';
+      displayCMD();
+    });
+  </script>
+</body>
+</html>
